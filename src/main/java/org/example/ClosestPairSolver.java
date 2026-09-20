@@ -6,6 +6,8 @@ import java.util.List;
 
 public class ClosestPairSolver {
     private long comparisons;
+    private int recursionDepth;
+    private int maxRecursionDepth;
     public Point[] findClosestPair(Point[] points) {
         if (points == null || points.length < 2) {
             throw new IllegalArgumentException(
@@ -13,6 +15,8 @@ public class ClosestPairSolver {
             );
         }
         comparisons = 0;
+        recursionDepth = 0;
+        maxRecursionDepth = 0;
         Point[] pointsByX = points.clone();
         Arrays.sort(pointsByX, Comparator.comparingDouble(Point::getX));
         return closestPair(pointsByX);

@@ -1,6 +1,8 @@
 package org.example;
 
 public class DeterministicSelector {
+    private int recursionDepth;
+    private int maxRecursionDepth;
     private long comparisons;
     public int select(int[] array, int k) {
         if (array == null || array.length == 0) {
@@ -10,21 +12,31 @@ public class DeterministicSelector {
             throw new IllegalArgumentException("Invalid k");
         }
         comparisons = 0;
+        recursionDepth = 0;
+        maxRecursionDepth = 0;
         return select(array, 0, array.length - 1, k);
     }
 
     private int select(int[] array, int left, int right, int k) {
         if (left == right) {
+            recursionDepth--;
             return array[left];
         }
         int pivot = medianOfMedians(array, left, right);
         int pivotIndex = partition(array, left, right, pivot);
         if (k == pivotIndex) {
+            recursionDepth--;
             return array[pivotIndex];
         }
         if (k < pivotIndex) {
+            recursionDepth--;
             return select(array, left, pivotIndex - 1, k);
         }
+        recursionDepth++;
+        if (recursionDepth > maxRecursionDepth) {
+            maxRecursionDepth = recursionDepth;
+        }
+        recursionDepth--;
         return select(array, pivotIndex + 1, right, k);
     }
 
