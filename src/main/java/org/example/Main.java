@@ -51,5 +51,25 @@ public class Main {
         System.out.println("Result: " + result);
         System.out.println("Comparisons: "
                 + selector.getComparisons());
+
+        System.out.println();
+        System.out.println("=== CLOSEST PAIR ===");
+        Point[] points = {
+                new Point(1, 1),
+                new Point(2, 5),
+                new Point(4, 4),
+                new Point(7, 8),
+                new Point(3, 3),
+                new Point(10, 10)
+        };
+        ClosestPairSolver solver = new ClosestPairSolver();
+        Point[] closestPair = solver.findClosestPair(points);
+        System.out.println("Closest points:");
+        System.out.println(closestPair[0]);
+        System.out.println(closestPair[1]);
+        System.out.println("Distance: "
+                + closestPair[0].distance(closestPair[1]));
+        System.out.println("Comparisons: "
+                + solver.getComparisons());
     }
 }
