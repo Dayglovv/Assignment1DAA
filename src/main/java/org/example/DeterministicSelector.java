@@ -1,9 +1,8 @@
 package org.example;
-
 public class DeterministicSelector {
+    private long comparisons;
     private int recursionDepth;
     private int maxRecursionDepth;
-    private long comparisons;
     public int select(int[] array, int k) {
         if (array == null || array.length == 0) {
             throw new IllegalArgumentException("Array is empty");
@@ -17,27 +16,28 @@ public class DeterministicSelector {
         return select(array, 0, array.length - 1, k);
     }
 
-    private int select(int[] array, int left, int right, int k) {
+    private int select(int[] array, int left, int right, int k){
+        recursionDepth++;
+        if (recursionDepth > maxRecursionDepth) {
+            maxRecursionDepth = recursionDepth;
+        }
         if (left == right) {
             recursionDepth--;
             return array[left];
         }
         int pivot = medianOfMedians(array, left, right);
-        int pivotIndex = partition(array, left, right, pivot);
+        int pivotIndex =
+                partition(array, left, right, pivot);
+        int result;
         if (k == pivotIndex) {
-            recursionDepth--;
-            return array[pivotIndex];
-        }
-        if (k < pivotIndex) {
-            recursionDepth--;
-            return select(array, left, pivotIndex - 1, k);
-        }
-        recursionDepth++;
-        if (recursionDepth > maxRecursionDepth) {
-            maxRecursionDepth = recursionDepth;
+            result = array[pivotIndex];
+        } else if (k < pivotIndex) {
+            result = select(array, left, pivotIndex - 1, k);
+        } else {
+            result = select(array, pivotIndex + 1, right, k);
         }
         recursionDepth--;
-        return select(array, pivotIndex + 1, right, k);
+        return result;
     }
 
     private int medianOfMedians(int[] array, int left, int right) {
@@ -58,13 +58,16 @@ public class DeterministicSelector {
         return select(array, left, left + medianCount - 1, left + middle);
     }
 
-    private int partition(int[] array, int left, int right, int pivot) {
+    private int partition(int[] array, int left, int right, int pivot){
         int pivotIndex = left;
-        while (pivotIndex <= right && array[pivotIndex] != pivot) {
+        while (pivotIndex <= right
+                && array[pivotIndex] != pivot) {
             pivotIndex++;
         }
         if (pivotIndex > right) {
-            throw new IllegalStateException("Pivot not found");
+            throw new IllegalStateException(
+                    "Pivot not found"
+            );
         }
         swap(array, pivotIndex, right);
         int smallerIndex = left;
@@ -100,7 +103,12 @@ public class DeterministicSelector {
         array[i] = array[j];
         array[j] = temp;
     }
+
     public long getComparisons() {
         return comparisons;
+    }
+
+    public int getMaxRecursionDepth() {
+        return maxRecursionDepth;
     }
 }
